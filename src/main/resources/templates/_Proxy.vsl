@@ -1,0 +1,69 @@
+## Velocity Template.
+package ${package};
+
+import ${package}._Entities.EntityProperty;
+import ${package}._Entities.ProxyState;
+
+/**
+ *
+ * @author jgeenen
+ */
+class ${cd.proxySimpleName} extends ${cd.entityName} implements _Entities.Proxy<${cd.entityName}> {
+
+#set( $idp = ${cd.idProperty})
+#if( $idp.isGenerated() )
+    private static ${cd.generatorTypeName} __ID_GENERATOR = ${cd.generatorTypeName}.MAX_VALUE;
+#end
+
+    private ProxyState proxyState;
+
+    @Override
+    public void __generateID() throws UnsupportedOperationException, IllegalStateException {
+#if( $idp.isGenerated() )
+        synchronized(${cd.proxySimpleName}.class){
+            ${cd.generatorTypeName} ${idp.setterParameterName} = __ID_GENERATOR--;
+            super.${idp.property.mutator.callSignature};
+        }
+#else
+        throw new UnsupportedOperationException("class ${cd.entityName} has no generated Id");
+#end
+    }
+
+    @Override
+    public void __superSet(EntityProperty __property, Object __value) {
+        switch(__property){
+#foreach($pd in $cd.propertyDescriptors )
+            case ${pd.enumName} : {
+#if(${pd.setterParameterName})
+                $pd.wrappedGenericType() ${pd.setterParameterName} = ($pd.wrappedGenericType()) __value;
+                super.${pd.property.mutator.callSignature};
+                break;
+#else
+                throw new UnsupportedOperationException("property ${pd.owner.entityName}.${pd.field.name} is read-only");
+#end
+            }
+#end
+            default : throw new IllegalArgumentException("unable to set property " + __property.propertyName + " on " + this.toString() );
+        }
+    }
+
+    @Override
+    public ProxyState __getState() {
+        return this.proxyState;
+    }
+
+    @Override
+    public void __setState(ProxyState proxyState) {
+        this.proxyState = proxyState;
+    }
+
+#foreach($pd in ${cd.propertyDescriptors} )
+#if(${pd.setterParameterName})
+    @Override
+    ${pd.setterDeclarationSignature}{
+        EntityProperty.${pd.enumName}.set(this,${pd.setterParameterName});
+    }
+#end
+#end
+    
+}

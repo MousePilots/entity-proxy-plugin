@@ -1,0 +1,30 @@
+## Velocity Template.
+
+package ${cd.entityClass.package.name};
+
+import com.google.gwt.user.client.rpc.CustomFieldSerializer;
+import com.google.gwt.user.client.rpc.SerializationException;
+import com.google.gwt.user.client.rpc.SerializationStreamReader;
+import com.google.gwt.user.client.rpc.SerializationStreamWriter;
+import ${entitiesFQN}.EntityClass;
+
+/**
+ * custom field serializer for entity-class {@link ${cd.entityClass.name}}
+ */
+@javax.annotation.Generated(value = {"_CustomFieldSerializer.vsl"})
+public class ${cd.customFieldSerializerClassSimpleName} extends CustomFieldSerializer<${cd.entityClass.name}> {
+    public static void serialize(SerializationStreamWriter writer,    ${cd.entityClass.name} instance) throws SerializationException {
+        ${entitiesFQN}.serializeInstance(EntityClass.${cd.enumName}, writer, instance);    
+    }
+    public static void deserialize(SerializationStreamReader reader,  ${cd.entityClass.name} instance) throws SerializationException {
+        ${entitiesFQN}.deserializeInstance(EntityClass.${cd.enumName}, reader, instance);    
+    }
+    @Override
+    public void serializeInstance(SerializationStreamWriter writer,   ${cd.entityClass.name} instance) throws SerializationException {
+        ${entitiesFQN}.serializeInstance(EntityClass.${cd.enumName},writer, instance);
+    }
+    @Override
+    public void deserializeInstance(SerializationStreamReader reader, ${cd.entityClass.name} instance) throws SerializationException {
+        ${entitiesFQN}.deserializeInstance(EntityClass.${cd.enumName}, reader, instance);
+    }
+}

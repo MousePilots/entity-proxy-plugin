@@ -1,0 +1,49 @@
+## Velocity Template.
+package ${package};
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.validation.client.AbstractGwtValidatorFactory;
+import com.google.gwt.validation.client.GwtValidation;
+import com.google.gwt.validation.client.impl.AbstractGwtValidator;
+import java.util.logging.Logger;
+import javax.validation.Validator;
+
+/**
+ * GWT-specific implementation of {@link javax.validation.ValidatorFactory}. The canonical way of obtaining a {@link Validator} within GWT is the same
+ * as in server-side code:<p/>
+ * {@code Validator validator = Validation.buildDefaultValidatorFactory().getValidator();}<p/>
+ * I.e. do <strong>not</strong> instantiate this class directly!
+ * @author jgeenen
+ * @see <a href="http://code.google.com/p/google-web-toolkit/wiki/BeanValidation">Google's examples</a>.
+ */
+@javax.annotation.Generated(value = "_GwtClientValidatorFactory")
+public final class _GwtClientValidatorFactory extends AbstractGwtValidatorFactory {
+
+    private static final Logger LOG = Logger.getLogger(_GwtClientValidatorFactory.class.getName());
+
+    /**
+     * Only the classes listed in the {@link GwtValidation} annotation can be validated.
+     */
+    @GwtValidation(
+        value = {
+#foreach($cn in $cns)
+            ${cn}#if($foreach.hasNext),#end
+
+#end            
+        }, groups = {
+#foreach($gn in $gns)
+            ${gn}#if($foreach.hasNext),#end
+
+#end            
+        }
+    )
+    public interface GwtValidator extends Validator{}
+
+    @Override
+    public AbstractGwtValidator createValidator() {
+        AbstractGwtValidator validator = GWT.create(GwtValidator.class);
+        LOG.fine("created JSR-303 bean validator " + validator + " for $cns.size() classes and $gns.size() validation groups");
+        return validator;
+    }
+}
+
